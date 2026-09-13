@@ -250,7 +250,7 @@ class GeminiProvider(BaseLLMProvider):
             config = types.GenerateContentConfig(
                 system_instruction=system_prompt if system_prompt else None,
                 tools=[{"function_declarations": function_declarations}] if function_declarations else None,
-                temperature=0.2
+                temperature=0.4
             )
 
             response = client.models.generate_content(
@@ -325,7 +325,7 @@ class GeminiProvider(BaseLLMProvider):
             config = types.GenerateContentConfig(
                 system_instruction=system_prompt if system_prompt else None,
                 tools=[{"function_declarations": function_declarations}] if function_declarations else None,
-                temperature=0.2
+                temperature=0.4
             )
 
             response = client.models.generate_content(
@@ -367,7 +367,7 @@ class GeminiProvider(BaseLLMProvider):
             config = types.GenerateContentConfig(
                 system_instruction=system_prompt if system_prompt else None,
                 tools=[{"function_declarations": function_declarations}] if function_declarations else None,
-                temperature=0.2
+                temperature=0.4
             )
 
             # Dựng contents ban đầu: trí nhớ hội thoại + câu hỏi hiện tại

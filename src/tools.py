@@ -200,10 +200,20 @@ def execute_academic_query(student_id: str) -> str:
     """Thực thi tra cứu học vụ theo mã sinh viên"""
     student = MOCK_DATABASE.get(student_id.strip().upper())
     if student:
+        message = (
+            f"Hồ sơ sinh viên **{student_id.strip().upper()}**:\n"
+            f"- 👤 Họ tên: **{student['full_name']}**\n"
+            f"- 🏫 Lớp: {student['class']}\n"
+            f"- 📊 GPA: **{student['gpa']}**\n"
+            f"- 📧 Email: {student['email']}\n"
+            f"- 🧑‍🏫 Cố vấn: {student['advisor']}\n"
+            f"- 🔖 Trạng thái: {student['status']}"
+        )
         return json.dumps({
             "status": "SUCCESS",
             "student_id": student_id,
-            "data": student
+            "data": student,
+            "message": message
         }, ensure_ascii=False)
     else:
         return json.dumps({
@@ -256,12 +266,12 @@ def execute_get_exam_schedule(student_id: str) -> str:
             "exams": [],
             "message": f"Sinh viên {sid} hiện chưa có lịch thi nào được công bố."
         }, ensure_ascii=False)
-    desc = "; ".join(f"{e['course']} — {e['date']} {e['time']} tại {e['room']}" for e in exams)
+    lines = "\n".join(f"- 📝 **{e['course']}** — {e['date']} lúc {e['time']}, phòng {e['room']}" for e in exams)
     return json.dumps({
         "status": "SUCCESS",
         "student_id": sid,
         "exams": exams,
-        "message": f"Lịch thi của sinh viên {sid}: {desc}."
+        "message": f"Lịch thi của sinh viên **{sid}**:\n{lines}"
     }, ensure_ascii=False)
 
 
@@ -290,52 +300,57 @@ def execute_register_course(student_id: str, course_code: str) -> str:
 
 
 # Kho tri thức Sổ tay chương trình (trích từ FAQ thật của "VinUni AI in Action")
+# content được viết sẵn dạng Markdown bullet + emoji để câu trả lời trình bày đẹp, đồng nhất.
 GUIDEBOOK_KB = [
     {
         "keywords": ["tổng quan", "quy mô", "triết lý", "challenge", "cbl", "4 thật", "mục tiêu", "chương trình"],
         "title": "Tổng quan & Triết lý chương trình AI in Action",
-        "content": ("Khởi xướng từ 1/2026 hưởng ứng Nghị quyết 57-NQ/TW, mục tiêu đào tạo 10.000–20.000 nhân tài AI trong 2 năm. "
-                    "Triết lý '4 Thật': Bài toán thật – Dữ liệu thật – Chuyên gia thật – Cơ hội việc làm thật. "
-                    "Học theo Challenge-Based Learning với ~160 bài toán mô phỏng và 200+ bài toán AI thực tế. "
-                    "Đánh giá năng lực toàn diện mỗi 2 tuần/lần.")
+        "content": ("- 🎯 **Mục tiêu:** đào tạo **10.000–20.000 nhân tài AI** trong 2 năm (hưởng ứng Nghị quyết 57-NQ/TW).\n"
+                    "- 🧪 **Triết lý 4 Thật:** Bài toán thật · Dữ liệu thật · Chuyên gia thật · Cơ hội việc làm thật.\n"
+                    "- 🚀 **Cách học:** Challenge-Based Learning với **~160 bài mô phỏng** và **200+ bài toán AI thực tế**.\n"
+                    "- 📊 **Đánh giá:** năng lực toàn diện **mỗi 2 tuần/lần**.")
     },
     {
-        "keywords": ["học phí", "trợ cấp", "phụ cấp", "8 triệu", "tài trợ", "sinh hoạt phí", "tiền", "miễn phí"],
+        "keywords": ["học phí", "trợ cấp", "phụ cấp", "8 triệu", "tài trợ", "sinh hoạt phí", "tiền", "miễn phí", "học bổng"],
         "title": "Học phí & Trợ cấp",
-        "content": ("Học viên được miễn 100% học phí trong suốt chương trình và nhận phụ cấp sinh hoạt 8.000.000 VNĐ/tháng "
-                    "trong 12 tuần đào tạo. Điều kiện nhận: chuyên cần từ 90% trở lên, nộp bài/dự án đúng hạn và đạt "
-                    "đánh giá năng lực từ Mentor & Ban Đào tạo.")
+        "content": ("- 💰 **Miễn 100% học phí** trong suốt chương trình.\n"
+                    "- 🏠 Trợ cấp sinh hoạt **8.000.000đ/tháng** trong **12 tuần** đào tạo.\n"
+                    "- ✅ **Điều kiện:** chuyên cần **≥ 90%**, nộp bài/dự án đúng hạn và đạt đánh giá từ Mentor & Ban Đào tạo.")
     },
     {
         "keywords": ["lịch học", "giờ học", "buổi sáng", "mấy giờ", "ca sáng", "thời gian học"],
         "title": "Lịch học",
-        "content": ("Khung giờ học tập trung buổi sáng bắt đầu từ 9h00 (AI20K Time 9h00–13h00), trừ thông báo đặc biệt. "
-                    "Khuyến nghị có mặt trước 10–15 phút để chuẩn bị máy tính và điểm danh.")
+        "content": ("- ⏰ Ca sáng học từ **9h00** (khung AI20K Time **9h00–13h00**), trừ thông báo đặc biệt.\n"
+                    "- 🪑 Nên có mặt **trước 10–15 phút** để chuẩn bị máy và điểm danh.")
     },
     {
         "keywords": ["tiếng anh", "english", "ngôn ngữ", "từ vựng"],
         "title": "Yêu cầu Tiếng Anh",
-        "content": ("Không bắt buộc giỏi tiếng Anh giao tiếp vì slide và lời giảng bằng Tiếng Việt. Tuy nhiên học viên "
-                    "cần học thuộc từ vựng tiếng Anh chuyên ngành AI/CNTT vì thuật ngữ xuất hiện nhiều trên slide và bài giảng.")
+        "content": ("- 🗣️ **Không bắt buộc** giỏi tiếng Anh giao tiếp — slide và bài giảng bằng **tiếng Việt**.\n"
+                    "- 📖 Cần **học từ vựng tiếng Anh chuyên ngành** AI/CNTT vì thuật ngữ xuất hiện nhiều.")
     },
     {
         "keywords": ["thực tập", "6 tuần", "doanh nghiệp", "internship", "full-time", "công ty"],
         "title": "Thực tập 6 tuần",
-        "content": ("6 tuần cuối khóa là thực tập full-time trực tiếp tại các công ty công nghệ, tập đoàn đối tác hoặc "
-                    "viện nghiên cứu. Học viên tham gia dự án thật dưới sự giám sát của Mentor doanh nghiệp.")
+        "content": ("- 🏢 **6 tuần cuối khóa** thực tập **full-time** tại công ty công nghệ, tập đoàn đối tác hoặc viện nghiên cứu.\n"
+                    "- 👨‍🏫 Tham gia **dự án thật** dưới sự giám sát của Mentor doanh nghiệp.")
     },
     {
         "keywords": ["đgnl", "bài thi", "đầu vào", "tuyển chọn", "đánh giá năng lực", "thi", "cấu trúc"],
         "title": "Bài thi Đánh giá Năng lực (ĐGNL)",
-        "content": ("Tuyển chọn 2 vòng: Vòng 1 xét hồ sơ online; Vòng 2 thi ĐGNL trực tiếp tại VinUni (Vinhomes Ocean Park, Hà Nội). "
-                    "Bài thi 90 phút gồm trắc nghiệm, đọc code ngắn và tự luận tình huống, chia 4 nhóm: Toán–Định lượng; "
-                    "Lập trình–Dữ liệu (Python, SQL); Kiến thức & Tư duy Sản phẩm AI (ML/LLM/RAG/Agent); Logic–Đạo đức–Hành vi.")
+        "content": ("- 📋 **Tuyển chọn 2 vòng:** Vòng 1 xét hồ sơ online; Vòng 2 thi trực tiếp tại VinUni (Vinhomes Ocean Park, Hà Nội).\n"
+                    "- ⏱️ **Bài thi 90 phút:** trắc nghiệm, đọc code ngắn và tự luận tình huống.\n"
+                    "- 🧮 **Nhóm 1 — Toán / Định lượng**\n"
+                    "- 💻 **Nhóm 2 — Lập trình & Dữ liệu** (Python, SQL)\n"
+                    "- 🤖 **Nhóm 3 — Kiến thức & Tư duy Sản phẩm AI** (ML/LLM/RAG/Agent)\n"
+                    "- ⚖️ **Nhóm 4 — Logic, Đạo đức & Hành vi**")
     },
     {
         "keywords": ["việc làm", "nghề nghiệp", "tuyển dụng", "lương", "vingroup", "cơ hội", "offer", "ra trường"],
         "title": "Cơ hội nghề nghiệp & Mức lương",
-        "content": ("100% học viên Khóa 1 đạt chuẩn năng lực VinUni (373/500) nhận Offer từ Vingroup; 95% làm đúng chuyên môn "
-                    "(AI Engineer, Data Engineer, Software Dev, PM, BA), mức lương khởi điểm lên tới ~50.000.000 VNĐ/tháng.")
+        "content": ("- 🎖️ **100%** học viên Khóa 1 đạt chuẩn năng lực VinUni (373/500) nhận **Offer từ Vingroup**.\n"
+                    "- 💼 **95%** làm đúng chuyên môn: AI Engineer, Data Engineer, Software Dev, PM, BA.\n"
+                    "- 💵 Lương khởi điểm tới **~50.000.000đ/tháng**.")
     }
 ]
 
