@@ -68,8 +68,8 @@ TOOLS_SCHEMA = [
     # Tool 3: Thời gian thực
     {
         "name": "get_current_datetime",
-        "description": "Lấy ngày giờ hiện tại thực tế theo múi giờ Việt Nam (Asia/Ho_Chi_Minh). "
-                       "Dùng khi người dùng hỏi 'hôm nay là ngày mấy', 'bây giờ mấy giờ', hoặc cần mốc thời gian hiện tại để tính toán.",
+        "description": "Trả về ngày, thứ và giờ ở thời điểm hiện tại (múi giờ Việt Nam). "
+                       "Chỉ dùng khi người dùng hỏi đích danh về thời điểm hiện tại như 'hôm nay là ngày mấy', 'bây giờ mấy giờ', 'hôm nay thứ mấy'.",
         "parameters": {
             "type": "object",
             "properties": {},
@@ -116,10 +116,10 @@ TOOLS_SCHEMA = [
     # Tool 6: Tra cứu sổ tay chương trình (RAG-lite trên kho tri thức thật)
     {
         "name": "search_guidebook",
-        "description": "Tra cứu Sổ tay chương trình 'VinUni AI in Action' để trả lời câu hỏi chung về: "
-                       "học phí & trợ cấp, lịch học, yêu cầu tiếng Anh, thực tập, cấu trúc bài thi ĐGNL, "
-                       "cơ hội nghề nghiệp, quy mô & triết lý đào tạo. Dùng khi câu hỏi thuộc kiến thức chương trình "
-                       "chứ không phải hồ sơ của một sinh viên cụ thể.",
+        "description": "Tra cứu Sổ tay chương trình 'VinUni AI in Action'. DÙNG cho mọi câu hỏi kiến thức chung về chương trình: "
+                       "học phí, TRỢ CẤP / PHỤ CẤP HÀNG THÁNG (8 triệu/tháng) và điều kiện nhận, lịch học, yêu cầu tiếng Anh, "
+                       "thực tập, cấu trúc bài thi ĐGNL, cơ hội nghề nghiệp/mức lương, quy mô & triết lý đào tạo. "
+                       "Đây là tool đúng cho câu hỏi về 'trợ cấp hàng tháng bao nhiêu'.",
         "parameters": {
             "type": "object",
             "properties": {
@@ -366,12 +366,14 @@ def execute_search_guidebook(query: str) -> str:
         }, ensure_ascii=False)
 
     results = [{"title": e["title"], "content": e["content"]} for e in top]
-    combined = " ".join(f"[{r['title']}] {r['content']}" for r in results)
+    # message = nội dung mục liên quan nhất (sạch, không nhãn ngoặc) để LLM diễn đạt lại
+    message = results[0]["content"]
     return json.dumps({
         "status": "SUCCESS",
         "query": query,
+        "topic": results[0]["title"],
         "results": results,
-        "message": combined
+        "message": message
     }, ensure_ascii=False)
 
 

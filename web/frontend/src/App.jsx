@@ -5,8 +5,33 @@ import {
   Clock, Database, Search, CalendarDays, BookOpen, CheckCircle2, User, Zap,
 } from "lucide-react";
 import bgImage from "./ai-background.jpg";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+/* ---------- Markdown renderer (bold/italic/list/emoji) ---------- */
+const mdComponents = {
+  p: (p) => <p className="my-1.5 leading-relaxed" {...p} />,
+  strong: (p) => <strong className="font-semibold text-white" {...p} />,
+  em: (p) => <em className="italic text-slate-200" {...p} />,
+  ul: (p) => <ul className="my-1.5 list-disc space-y-1 pl-5 marker:text-cyan-400" {...p} />,
+  ol: (p) => <ol className="my-1.5 list-decimal space-y-1 pl-5 marker:text-cyan-400" {...p} />,
+  li: (p) => <li className="leading-relaxed" {...p} />,
+  h1: (p) => <h3 className="mb-1 mt-2 text-[14.5px] font-bold text-white" {...p} />,
+  h2: (p) => <h3 className="mb-1 mt-2 text-[14px] font-bold text-white" {...p} />,
+  h3: (p) => <h3 className="mb-1 mt-2 text-[13.5px] font-bold text-white" {...p} />,
+  a: (p) => <a className="text-cyan-300 underline" target="_blank" rel="noreferrer" {...p} />,
+  code: (p) => <code className="rounded bg-white/10 px-1 py-0.5 font-mono text-[12px] text-cyan-200" {...p} />,
+  hr: () => <hr className="my-2 border-white/10" />,
+};
+function MD({ children }) {
+  return (
+    <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
+      {children || ""}
+    </ReactMarkdown>
+  );
+}
 
 /* ---------- helpers ---------- */
 function highlightJson(obj) {
@@ -87,10 +112,12 @@ function StepCard({ step }) {
           className="mt-1 overflow-x-auto rounded-xl border border-cyan-400/15 bg-[#060a14] p-3 font-mono text-[11.5px] leading-relaxed text-slate-300"
           dangerouslySetInnerHTML={{ __html: highlightJson(step.data) }}
         />
+      ) : step.kind === "final" ? (
+        <div className="text-[13.5px] leading-relaxed text-slate-100">
+          <MD>{step.text}</MD>
+        </div>
       ) : (
-        <p className={`text-[13.5px] leading-relaxed text-slate-200 ${step.kind === "final" ? "font-medium" : ""}`}>
-          {step.text}
-        </p>
+        <p className="text-[13.5px] leading-relaxed text-slate-200">{step.text}</p>
       )}
     </motion.div>
   );
@@ -131,7 +158,7 @@ export default function App() {
 
   const examples = [
     { icon: Clock, label: "Hôm nay là ngày bao nhiêu?", q: "Hôm nay là ngày bao nhiêu?" },
-    { icon: BookOpen, label: "Học phí & trợ cấp thế nào?", q: "Chương trình AI in Action trợ cấp hàng tháng bao nhiêu và điều kiện nhận là gì?" },
+    { icon: BookOpen, label: "Học phí & trợ cấp thế nào?", q: "Chương trình AI in Action hỗ trợ học phí và trợ cấp sinh hoạt ra sao?" },
     { icon: CalendarDays, label: "Lịch thi của SV2026001", q: "Tra cứu lịch thi của sinh viên SV2026001." },
     { icon: Sparkles, label: "Đa bước: tra cứu → đặt lịch", q: "Tra cứu cố vấn học tập của sinh viên SV2026001, sau đó đặt lịch hẹn tư vấn với đúng cố vấn đó vào 09:30 ngày 20/09/2026." },
     { icon: Database, label: "Tra cứu học vụ SV2026001", q: "Hãy tra cứu thông tin học vụ của sinh viên SV2026001." },
@@ -274,7 +301,7 @@ export default function App() {
                   <div className={
                     m.role === "user"
                       ? "max-w-[80%] rounded-2xl rounded-br-sm bg-gradient-to-br from-cyan-500 to-blue-600 px-4 py-2.5 text-[13.5px] leading-relaxed text-white shadow-lg shadow-cyan-500/20"
-                      : "max-w-[88%] whitespace-pre-wrap rounded-2xl rounded-tl-sm border border-cyan-400/15 bg-white/[0.04] px-4 py-2.5 text-[13.5px] leading-relaxed text-slate-100"
+                      : "max-w-[88%] rounded-2xl rounded-tl-sm border border-cyan-400/15 bg-white/[0.04] px-4 py-2.5 text-[13.5px] leading-relaxed text-slate-100"
                   }>
                     {m.thinking ? (
                       <span className="flex gap-1.5 py-1">
@@ -284,8 +311,11 @@ export default function App() {
                             transition={{ duration: 1, repeat: Infinity, delay: d * 0.15 }} />
                         ))}
                       </span>
-                    ) : (m.role === "user" ? <User size={14} className="mr-1.5 inline opacity-70" /> : null) }
-                    {!m.thinking && m.text}
+                    ) : m.role === "user" ? (
+                      <span><User size={14} className="mr-1.5 inline opacity-70" />{m.text}</span>
+                    ) : (
+                      <MD>{m.text}</MD>
+                    )}
                   </div>
                 </motion.div>
               ))}

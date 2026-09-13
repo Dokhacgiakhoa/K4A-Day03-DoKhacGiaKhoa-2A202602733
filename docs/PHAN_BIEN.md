@@ -218,7 +218,7 @@ Người dùng → Agent Core (MCP Client)
 | 1 | "Hôm nay là ngày bao nhiêu?" | Tool **thời gian thực** `get_current_datetime` — không bịa ngày |
 | 2 | "Tra cứu thông tin học vụ SV2026001" | 1 tool `academic_query` → Observation JSON → Final |
 | 3 | "Tra cứu cố vấn của SV2026001 rồi đặt lịch với đúng cố vấn đó vào 09:30 ngày 20/09/2026" | **ReAct đa bước**: 2 tool nối tiếp (cột phải hiện `academic_query → schedule_appointment`) |
-| 4 | "Chương trình trợ cấp hàng tháng bao nhiêu?" | `search_guidebook` trả dữ liệu thật (8 triệu/tháng) |
+| 4 | "Chương trình AI in Action hỗ trợ học phí và trợ cấp sinh hoạt ra sao?" | `search_guidebook` trả dữ liệu thật (miễn 100% học phí, 8 triệu/tháng) |
 | 5 | "Tra cứu SV9999999" | **Anti-hallucination**: NOT_FOUND, không bịa |
 
 > Chỉ vào **cột phải (Luồng suy luận)** để minh họa Thought → Action → Observation → Final và badge **LIVE** (đang dùng LLM thật).
