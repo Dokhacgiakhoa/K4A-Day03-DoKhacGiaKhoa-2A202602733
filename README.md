@@ -128,3 +128,47 @@ Học viên làm bài lần lượt theo đúng luồng 3 bước tinh giản d�
 | **2. ReAct Loop & MCP Integration** | **35%** | Vòng lặp ReAct chạy mượt mà qua Native Tool Calling & MCP Server **trên LLM API thật (Gemini/OpenAI)**. | Code trong `src/mcp_server.py` + `src/tools.py` + `src/app.py` + Log API thật. |
 | **3. Waterfall Trace & Observation** | **25%** | File log `trace_waterfall.json` trích xuất đầy đủ chuỗi suy luận Thought $\rightarrow$ Action $\rightarrow$ Observation. | File log `docs/trace_waterfall.json` + `docs/trace_eval.md`. |
 | **4. Git Repository & Submission** | **15%** | Cấu trúc Repo sạch sẽ, commit chuẩn chỉ và nộp đúng hạn trên LMS VLearn. | Link Repo GitHub cá nhân. |
+
+---
+
+## 🎁 7. PHẦN MỞ RỘNG CỦA HỌC VIÊN — AGENT NÂNG CAO + WEB REACT + DEPLOY (BONUS)
+
+**Chủ đề đã chọn:** Gợi ý 1.1 — Trợ lý Học vụ VinUni (Lĩnh vực Giáo dục).
+
+Ngoài phần core (CLI + trace log 2 tool), đồ án nâng cấp agent "làm được nhiều hơn" và bổ sung giao diện **React** trực quan để demo/phản biện. Chi tiết trong [`docs/trace_eval.md`](docs/trace_eval.md) mục 4.
+
+### 🧠 Năng lực nâng cao của Agent
+- **6 Tools qua MCP:** `academic_query`, `schedule_appointment`, `get_current_datetime` (thời gian thực), `get_exam_schedule` (lịch thi), `register_course` (đăng ký môn), `search_guidebook` (tra cứu Sổ tay chương trình từ kho tri thức thật).
+- **ReAct ĐA BƯỚC thật sự:** Agent gọi nhiều Tool nối tiếp trong một câu hỏi (vd: tra cứu cố vấn → đặt lịch với đúng cố vấn đó), nạp lại Observation cho LLM qua `provider.next_action` / `run_agent`.
+- **Trí nhớ hội thoại:** frontend gửi kèm lịch sử các lượt trước để Agent hiểu ngữ cảnh câu hỏi nối tiếp.
+
+### Cấu trúc bổ sung
+```text
+📁 web/
+├── 📄 backend.py          <-- 🌐 FastAPI: serve UI + API /api/chat (ReAct đa bước + trí nhớ)
+├── 📁 frontend/           <-- ⚛️ Mã nguồn React (Vite + Tailwind + framer-motion + lucide)
+│   └── 📁 src/            <-- App.jsx (giao diện 2 cột), main.jsx, index.css
+└── 📁 static_react/       <-- 📦 Bản React đã build (Vite) — FastAPI serve, được commit để Render dùng
+📄 render.yaml             <-- 🚀 Cấu hình deploy lên Render
+```
+
+### Chạy giao diện Web (local)
+```bash
+python web/backend.py
+# Mở trình duyệt tại http://localhost:8000
+```
+Muốn sửa giao diện React rồi build lại:
+```bash
+cd web/frontend
+npm install
+npm run build      # xuất ra web/static_react/
+```
+
+### Deploy lên Render
+1. Push repo (kèm thư mục `web/static_react/` đã build) lên GitHub.
+2. Vào [dashboard.render.com](https://dashboard.render.com) → **New +** → **Blueprint** → chọn repo (Render tự đọc `render.yaml`, chỉ cần chạy Python).
+3. Tab **Environment**: điền `GEMINI_API_KEY` (giá trị bí mật).
+4. Deploy → Render cấp URL công khai `https://<ten>.onrender.com`.
+
+> ✨ CLI cũng được nâng cấp bằng `rich` (khung màu, bảng tổng kết): `python src/app.py --all`.
+> 🧬 Model dùng: `gemini-flash-latest` (đặt trong `.env` / Render Env).

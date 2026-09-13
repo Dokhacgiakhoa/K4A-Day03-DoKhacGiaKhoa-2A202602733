@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VinUni ReAct Agent — Trợ lý Học vụ MCP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="app">
+    <!-- ===== Top bar: thương hiệu + cấu hình hệ thống ===== -->
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-logo">🏫</div>
+        <div>
+          <div class="brand-title">VinUni ReAct Agent</div>
+          <div class="brand-sub">Trợ lý Học vụ · MCP Enhanced</div>
+        </div>
+      </div>
+
+      <div class="sysinfo">
+        <span class="chip"><i>LLM</i><b id="info-provider">…</b></span>
+        <span class="chip"><i>Model</i><b id="info-model">…</b></span>
+        <span class="chip"><i>MCP</i><b id="info-mcp">…</b></span>
+        <span class="chip"><i>Max Loops</i><b id="info-max">…</b></span>
+        <span class="chip mode"><i>Chế độ</i><b id="info-mode" class="badge">…</b></span>
+      </div>
+    </header>
+
+    <!-- ===== Workspace: 2 cột ===== -->
+    <div class="workspace">
+
+      <!-- CỘT TRÁI: KHUNG CHAT -->
+      <section class="col chat-col">
+        <div class="col-head">💬 Hội thoại</div>
+
+        <div id="chat" class="chat">
+          <div class="welcome">
+            <div class="welcome-emoji">🤖</div>
+            <h2>Xin chào! Tôi là ReAct Agent Học vụ VinUni.</h2>
+            <p>Hỏi tôi về quy chế học vụ, tra cứu hồ sơ sinh viên hoặc đặt lịch tư vấn.<br/>
+               Luồng suy luận của tôi hiển thị ở cột bên phải →</p>
+            <div class="examples">
+              <button class="example" data-q="Hôm nay là ngày bao nhiêu?">🕐 Thời gian thực: hôm nay ngày mấy?</button>
+              <button class="example" data-q="Chương trình AI in Action trợ cấp hàng tháng bao nhiêu và điều kiện nhận là gì?">📖 Sổ tay: học phí & trợ cấp</button>
+              <button class="example" data-q="Tra cứu lịch thi của sinh viên SV2026001.">📅 Tra cứu lịch thi SV2026001</button>
+              <button class="example" data-q="Tra cứu cố vấn học tập của sinh viên SV2026001, sau đó đặt lịch hẹn tư vấn với đúng cố vấn đó vào 09:30 ngày 20/09/2026.">🔗 Đa bước: tra cứu → đặt lịch</button>
+              <button class="example" data-q="Hãy tra cứu thông tin học vụ của sinh viên SV2026001.">🔎 Tra cứu học vụ SV2026001</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="composer">
+          <input id="input" type="text" placeholder="Nhập câu hỏi… (vd: Tra cứu sinh viên SV2026001)" autocomplete="off" />
+          <button id="send">Gửi ➤</button>
+        </div>
+      </section>
+
+      <!-- CỘT PHẢI: LUỒNG SUY NGHĨ -->
+      <section class="col reason-col">
+        <div class="col-head">
+          🧠 Luồng suy luận của Agent
+          <div class="legend">
+            <span class="lg lg-thought">Thought</span>
+            <span class="lg lg-action">Action</span>
+            <span class="lg lg-obs">Observation</span>
+            <span class="lg lg-final">Final</span>
+          </div>
+        </div>
+
+        <div id="reason-q" class="reason-q" hidden></div>
+
+        <div id="reason" class="reason">
+          <div class="reason-empty">
+            <div class="reason-empty-emoji">🔎</div>
+            <p>Chưa có câu hỏi nào.<br/>Gửi một câu hỏi để xem Agent suy luận từng bước<br/><b>Thought → Action → Observation → Final Answer</b>.</p>
+            <div id="tools-list" class="tools-list"></div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="/static/script.js"></script>
+</body>
+</html>

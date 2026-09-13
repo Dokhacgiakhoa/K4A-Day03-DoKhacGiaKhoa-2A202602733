@@ -14,3 +14,9 @@ __pycache__/
 Thumbs.db
 .vscode/
 .idea/
+
+# Node / React frontend
+web/frontend/node_modules/
+node_modules/
+npm-debug.log*
+# LƯU Ý: web/static_react/ (bản React đã build) ĐƯỢC commit để Render (chỉ chạy Python) serve được.

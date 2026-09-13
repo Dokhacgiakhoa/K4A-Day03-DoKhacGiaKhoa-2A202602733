@@ -5,3 +5,7 @@ python-dotenv
 requests
 pydantic
 rich
+
+# Web UI & Deploy (Render) — Giai đoạn 2: Giao diện trực quan cộng điểm
+fastapi
+uvicorn[standard]

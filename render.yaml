@@ -1,0 +1,29 @@
+# ==========================================================================
+# 🚀 RENDER DEPLOYMENT CONFIG — Giai đoạn 2: Deploy giao diện trực quan
+# Deploy Web UI (FastAPI) của ReAct Agent lên Render (https://render.com)
+#
+# CÁCH DEPLOY:
+#   1. Push repo này lên GitHub cá nhân.
+#   2. Vào https://dashboard.render.com -> New + -> Blueprint -> chọn repo.
+#      (Render tự đọc file render.yaml này)
+#   3. Ở tab Environment, điền giá trị bí mật cho GEMINI_API_KEY (sync=false).
+#   4. Deploy. Render sẽ cấp một URL công khai dạng https://<ten>.onrender.com
+# ==========================================================================
+services:
+  - type: web
+    name: vinuni-react-agent
+    runtime: python
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "uvicorn web.backend:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.8"
+      - key: LLM_PROVIDER
+        value: "gemini"
+      - key: LLM_MODEL
+        value: "gemini-flash-latest"
+      # ⚠️ KHÔNG commit API key vào file này. Điền trực tiếp trong Render Dashboard
+      #    (Environment -> Add Environment Variable). sync:false = giá trị bí mật.
+      - key: GEMINI_API_KEY
+        sync: false

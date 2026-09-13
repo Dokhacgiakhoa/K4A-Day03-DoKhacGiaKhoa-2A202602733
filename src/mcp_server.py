@@ -39,7 +39,27 @@ class MCPAcademicServer:
         # 3. Đóng gói phản hồi và trả về Dict theo đúng chuẩn giao thức MCP JSON-RPC 2.0:
         #    - Các trường bắt buộc: "jsonrpc": "2.0", "server": self.server_name, "tool": tool_name, "result": content
         # --------------------------------------------------------------------------
-        return {}
+
+        # Bước 1: Gọi Tool Router thực thi công cụ, nhận về chuỗi JSON kết quả
+        raw_result = dispatch_tool_call(tool_name, arguments)
+
+        # Bước 2: Chuyển chuỗi JSON thành Python Dictionary (Observation content)
+        try:
+            content = json.loads(raw_result)
+        except (json.JSONDecodeError, TypeError):
+            content = {
+                "status": "PARSE_ERROR",
+                "error": "Không thể phân giải chuỗi JSON kết quả từ Tool Router.",
+                "raw": str(raw_result)
+            }
+
+        # Bước 3: Đóng gói phản hồi theo chuẩn giao thức MCP JSON-RPC 2.0
+        return {
+            "jsonrpc": "2.0",
+            "server": self.server_name,
+            "tool": tool_name,
+            "result": content
+        }
 
 
 if __name__ == "__main__":
