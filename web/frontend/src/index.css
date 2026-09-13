@@ -13,8 +13,8 @@ body,
 
 body {
   font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
-  background: #070b16;
-  color: #e8edf8;
+  background: #040914;
+  color: #f8fafc;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -22,29 +22,37 @@ body {
   font-family: "JetBrains Mono", ui-monospace, monospace;
 }
 
-/* Scrollbar */
+/* Scrollbar (đồng bộ AI in Action) */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-thumb {
-  background: #2a3958;
-  border-radius: 8px;
+  background: rgba(51, 65, 85, 0.7);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #38bdf8;
 }
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: rgba(7, 13, 30, 0.5);
 }
 
-/* Glow nền động */
+/* Glow nền động — tông cyan / indigo / emerald của AI in Action */
 .aurora {
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
   background:
-    radial-gradient(60rem 30rem at 85% -10%, rgba(99, 102, 241, 0.18), transparent),
-    radial-gradient(50rem 28rem at -10% 110%, rgba(139, 92, 246, 0.14), transparent),
-    radial-gradient(40rem 24rem at 50% 120%, rgba(34, 211, 238, 0.08), transparent);
+    radial-gradient(ellipse at 50% 6%, rgba(56, 189, 248, 0.16), transparent 55%),
+    radial-gradient(ellipse at 85% 45%, rgba(99, 102, 241, 0.14), transparent 50%),
+    radial-gradient(ellipse at 15% 82%, rgba(16, 185, 129, 0.12), transparent 50%);
+}
+
+/* Chữ phát sáng neon (giống AI in Action) */
+.neon-cyan {
+  text-shadow: 0 0 8px rgba(56, 189, 248, 0.45), 0 0 16px rgba(56, 189, 248, 0.2);
 }
 
 @keyframes pulse-dot {

@@ -4,6 +4,7 @@ import {
   Brain, Wrench, Eye, Flag, Bot, Send, GraduationCap, Sparkles,
   Clock, Database, Search, CalendarDays, BookOpen, CheckCircle2, User, Zap,
 } from "lucide-react";
+import bgImage from "./ai-background.jpg";
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -44,7 +45,7 @@ function StepCard({ step }) {
       initial={{ opacity: 0, y: 10, scale: 0.98 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.28, ease: "easeOut" }}
-      className={`relative rounded-2xl border border-white/10 bg-white/[0.03] p-4 pl-14 backdrop-blur-sm ${
+      className={`relative rounded-2xl border border-cyan-400/15 bg-white/[0.03] p-4 pl-14 backdrop-blur-sm ${
         step.kind === "final" ? "bg-gradient-to-br from-violet-500/10 to-transparent" : ""
       }`}
       style={{ boxShadow: `inset 3px 0 0 ${cfg.color}` }}
@@ -83,7 +84,7 @@ function StepCard({ step }) {
         </div>
       ) : step.kind === "observation" ? (
         <pre
-          className="mt-1 overflow-x-auto rounded-xl border border-white/10 bg-[#060a14] p-3 font-mono text-[11.5px] leading-relaxed text-slate-300"
+          className="mt-1 overflow-x-auto rounded-xl border border-cyan-400/15 bg-[#060a14] p-3 font-mono text-[11.5px] leading-relaxed text-slate-300"
           dangerouslySetInnerHTML={{ __html: highlightJson(step.data) }}
         />
       ) : (
@@ -98,7 +99,7 @@ function StepCard({ step }) {
 /* ---------- Info chip (header) ---------- */
 function Chip({ label, value, mono = true, accent }) {
   return (
-    <div className="rounded-xl border border-white/10 bg-white/[0.04] px-3 py-1.5">
+    <div className="rounded-xl border border-cyan-400/15 bg-white/[0.04] px-3 py-1.5">
       <div className="text-[9px] font-semibold uppercase tracking-wider text-slate-400">{label}</div>
       <div className={`text-[12px] font-semibold ${mono ? "font-mono" : ""} ${accent || "text-slate-100"}`}>{value}</div>
     </div>
@@ -192,12 +193,15 @@ export default function App() {
 
   return (
     <div className="relative flex h-full flex-col">
+      {/* Ảnh nền dự án: AI in Action (chip xanh) + lớp phủ tối để UI dễ đọc */}
+      <div className="fixed inset-0 z-0 bg-cover bg-center" style={{ backgroundImage: `url(${bgImage})` }} />
+      <div className="fixed inset-0 z-0" style={{ background: "linear-gradient(180deg, rgba(4,9,20,0.82), rgba(4,9,20,0.92))" }} />
       <div className="aurora" />
 
       {/* Header */}
-      <header className="relative z-10 flex flex-wrap items-center justify-between gap-4 border-b border-white/10 bg-white/[0.02] px-6 py-3 backdrop-blur-md">
+      <header className="relative z-10 flex flex-wrap items-center justify-between gap-4 border-b border-cyan-400/15 bg-white/[0.02] px-6 py-3 backdrop-blur-md">
         <div className="flex items-center gap-3">
-          <div className="grid h-11 w-11 place-items-center rounded-xl bg-gradient-to-br from-indigo-500 to-violet-500 shadow-lg shadow-indigo-500/30">
+          <div className="grid h-11 w-11 place-items-center rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 shadow-lg shadow-cyan-500/30">
             <GraduationCap size={22} className="text-white" />
           </div>
           <div>
@@ -209,8 +213,8 @@ export default function App() {
         <div className="flex flex-wrap items-center gap-2">
           {info && (
             <>
-              <Chip label="LLM" value={info.provider} accent="text-indigo-300" />
-              <Chip label="Model" value={info.model} accent="text-violet-300" />
+              <Chip label="LLM" value={info.provider} accent="text-cyan-300" />
+              <Chip label="Model" value={info.model} accent="text-sky-300" />
               <Chip label="MCP" value={info.mcp_server} />
               <Chip label="Loops" value={info.max_iterations} />
               <div className="flex items-center gap-2 rounded-xl border px-3 py-2"
@@ -228,16 +232,16 @@ export default function App() {
       {/* Workspace 2 cột */}
       <div className="relative z-10 grid min-h-0 flex-1 grid-cols-1 md:grid-cols-2">
         {/* Cột trái: Hội thoại */}
-        <section className="flex min-h-0 flex-col border-r border-white/10">
-          <div className="flex items-center gap-2 border-b border-white/10 px-6 py-3 text-[13px] font-bold">
-            <Bot size={16} className="text-indigo-400" /> Hội thoại
+        <section className="flex min-h-0 flex-col border-r border-cyan-400/15">
+          <div className="flex items-center gap-2 border-b border-cyan-400/15 px-6 py-3 text-[13px] font-bold">
+            <Bot size={16} className="text-cyan-400" /> Hội thoại
           </div>
 
           <div ref={chatRef} className="flex-1 space-y-4 overflow-y-auto p-5">
             {messages.length === 0 && (
               <div className="mx-auto mt-6 max-w-md text-center text-slate-400">
-                <div className="mx-auto mb-3 grid h-16 w-16 place-items-center rounded-2xl bg-gradient-to-br from-indigo-500/20 to-violet-500/20">
-                  <Bot size={30} className="text-indigo-300" />
+                <div className="mx-auto mb-3 grid h-16 w-16 place-items-center rounded-2xl bg-gradient-to-br from-cyan-500/20 to-blue-500/20">
+                  <Bot size={30} className="text-cyan-300" />
                 </div>
                 <h2 className="text-lg font-bold text-slate-100">Xin chào! Tôi là ReAct Agent Học vụ VinUni.</h2>
                 <p className="mt-2 text-[13px] leading-relaxed">
@@ -249,8 +253,8 @@ export default function App() {
                     const Icon = ex.icon;
                     return (
                       <button key={ex.label} onClick={() => send(ex.q)}
-                        className="flex w-full items-center gap-2.5 rounded-xl border border-white/10 bg-white/[0.03] px-3.5 py-2.5 text-[12.5px] text-slate-200 transition hover:border-indigo-500/50 hover:bg-indigo-500/10">
-                        <Icon size={15} className="shrink-0 text-indigo-400" /> {ex.label}
+                        className="flex w-full items-center gap-2.5 rounded-xl border border-cyan-400/15 bg-white/[0.03] px-3.5 py-2.5 text-[12.5px] text-slate-200 transition hover:border-cyan-400/50 hover:bg-cyan-500/10">
+                        <Icon size={15} className="shrink-0 text-cyan-400" /> {ex.label}
                       </button>
                     );
                   })}
@@ -263,14 +267,14 @@ export default function App() {
                 <motion.div key={i} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
                   className={m.role === "user" ? "flex justify-end" : "flex gap-2.5"}>
                   {m.role === "assistant" && (
-                    <div className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-gradient-to-br from-indigo-500/30 to-violet-500/30">
-                      <Bot size={17} className="text-indigo-300" />
+                    <div className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-gradient-to-br from-cyan-500/30 to-blue-500/30">
+                      <Bot size={17} className="text-cyan-300" />
                     </div>
                   )}
                   <div className={
                     m.role === "user"
-                      ? "max-w-[80%] rounded-2xl rounded-br-sm bg-gradient-to-br from-indigo-500 to-violet-500 px-4 py-2.5 text-[13.5px] leading-relaxed text-white shadow-lg shadow-indigo-500/20"
-                      : "max-w-[88%] whitespace-pre-wrap rounded-2xl rounded-tl-sm border border-white/10 bg-white/[0.04] px-4 py-2.5 text-[13.5px] leading-relaxed text-slate-100"
+                      ? "max-w-[80%] rounded-2xl rounded-br-sm bg-gradient-to-br from-cyan-500 to-blue-600 px-4 py-2.5 text-[13.5px] leading-relaxed text-white shadow-lg shadow-cyan-500/20"
+                      : "max-w-[88%] whitespace-pre-wrap rounded-2xl rounded-tl-sm border border-cyan-400/15 bg-white/[0.04] px-4 py-2.5 text-[13.5px] leading-relaxed text-slate-100"
                   }>
                     {m.thinking ? (
                       <span className="flex gap-1.5 py-1">
@@ -289,17 +293,17 @@ export default function App() {
           </div>
 
           {/* Composer */}
-          <div className="border-t border-white/10 bg-black/20 p-4">
+          <div className="border-t border-cyan-400/15 bg-black/20 p-4">
             <div className="flex gap-2.5">
               <input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && send()}
                 placeholder="Nhập câu hỏi… (vd: Tra cứu sinh viên SV2026001)"
-                className="flex-1 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-[13.5px] text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-indigo-500/60 focus:ring-2 focus:ring-indigo-500/20"
+                className="flex-1 rounded-xl border border-cyan-400/15 bg-white/[0.04] px-4 py-3 text-[13.5px] text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-400/20"
               />
               <button onClick={() => send()} disabled={busy}
-                className="flex items-center gap-1.5 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-500 px-5 text-[13.5px] font-semibold text-white transition hover:brightness-110 disabled:opacity-50">
+                className="flex items-center gap-1.5 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 px-5 text-[13.5px] font-semibold text-white transition hover:brightness-110 disabled:opacity-50">
                 <Send size={15} /> Gửi
               </button>
             </div>
@@ -308,7 +312,7 @@ export default function App() {
 
         {/* Cột phải: Luồng suy luận */}
         <section className="flex min-h-0 flex-col">
-          <div className="flex items-center justify-between gap-2 border-b border-white/10 px-6 py-3">
+          <div className="flex items-center justify-between gap-2 border-b border-cyan-400/15 px-6 py-3">
             <div className="flex items-center gap-2 text-[13px] font-bold">
               <Brain size={16} className="text-amber-400" /> Luồng suy luận của Agent
             </div>
@@ -321,7 +325,7 @@ export default function App() {
           </div>
 
           {reasonMeta && (
-            <div className="border-b border-dashed border-white/10 bg-white/[0.02] px-6 py-2.5 text-[12px] text-slate-400">
+            <div className="border-b border-dashed border-cyan-400/15 bg-white/[0.02] px-6 py-2.5 text-[12px] text-slate-400">
               Câu hỏi: <b className="text-slate-200">{reasonMeta.query}</b>
               {reasonMeta.tools && reasonMeta.tools.length > 0 && (
                 <span> · đã gọi: {reasonMeta.tools.map((t, i) => (
@@ -348,7 +352,7 @@ export default function App() {
                     {info.tools.map((t) => {
                       const Icon = TOOL_ICONS[t.name] || Wrench;
                       return (
-                        <div key={t.name} className="rounded-xl border border-white/10 bg-white/[0.03] p-2.5">
+                        <div key={t.name} className="rounded-xl border border-cyan-400/15 bg-white/[0.03] p-2.5">
                           <div className="flex items-center gap-2 font-mono text-[12px] font-semibold text-cyan-300">
                             <Icon size={13} /> {t.name}()
                           </div>
